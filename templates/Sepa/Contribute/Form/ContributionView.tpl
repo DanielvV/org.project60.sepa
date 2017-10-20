@@ -24,6 +24,7 @@
     <div class="crm-container">
       <table class="crm-info-panel">
         <tr><td class="label">{ts domain="org.project60.sepa"}Reference{/ts}</td><td>{$sepa.reference}</td></tr>
+        <tr><td class="label">{ts domain="org.project60.sepa"}Name Account Holder{/ts}</td><td>{$sepa.account_holder}</td></tr>
         <tr><td class="label">{ts domain="org.project60.sepa"}Grouped in{/ts}</td><td>{$sepa.tx_group}</td></tr>
         <tr><td class="label">{ts domain="org.project60.sepa"}IBAN{/ts}</td><td>{$sepa.iban}</td></tr>
         <tr><td class="label">{ts domain="org.project60.sepa"}BIC{/ts}</td><td>{$sepa.bic}</td></tr>

@@ -21,6 +21,7 @@
     <th>{ts domain="org.project60.sepa"}Status{/ts}</th>
     <th>&nbsp;</th>
     <th>{ts domain="org.project60.sepa"}Contact{/ts}</th>
+    <th>{ts domain="org.project60.sepa"}Name Account Holder{/ts}</th>
     <th>{ts domain="org.project60.sepa"}Financial Type{/ts}</th>
     <th>{ts domain="org.project60.sepa"}Campaign{/ts}</th>
   </thead>
@@ -32,6 +33,7 @@
       <td>{$contribution.contribution_status}</td>
       <td>&nbsp;</td>
       <td><a href="{$contribution.contact_link}"><div class="icon crm-icon {$contribution.contact_type}-icon"></div>{$contribution.contact_display_name}</a></td>
+      <td>{$contribution.account_holder}</td>
       <td>{$contribution.financial_type}</td>
       <td>{$contribution.campaign}</td>
     </tr>
@@ -49,6 +51,7 @@
             </td>
             <td/>
             <td>{$different_contacts}&nbsp;{ts domain="org.project60.sepa"}Contacts{/ts}</td>
+            <td>&nbsp;</td>
             <td>{$different_types}&nbsp;{ts domain="org.project60.sepa"}Financial Types{/ts}</td>
             <td>{$different_campaigns}&nbsp;{ts domain="org.project60.sepa"}Campaigns{/ts}</td>
         </tr>
