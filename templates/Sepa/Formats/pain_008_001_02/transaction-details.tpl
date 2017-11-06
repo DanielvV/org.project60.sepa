@@ -55,9 +55,13 @@
           </MndtRltdInf>
         </DrctDbtTx>
         <DbtrAgt>
+{if $contribution.bic == ''}
+          <FinInstnId />
+{else}
           <FinInstnId>
             <BIC>{$contribution.bic}</BIC>
           </FinInstnId>
+{/if}
         </DbtrAgt>
         <Dbtr>
           <Nm>{$contribution.display_name}</Nm>
