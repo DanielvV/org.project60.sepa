@@ -392,6 +392,7 @@ class CRM_Sepa_Page_CreateMandate extends CRM_Core_Page {
   function validateParameters() {
     $errors = array();
 
+    $limit_amount_single = (int) CRM_Sepa_Logic_Settings::getSetting("batching.limit.amount.single", $_REQUEST['creditor_id']);
     // check amount
     if (!isset($_REQUEST['total_amount'])) {
       $errors['total_amount'] = sprintf(ts("'%s' is a required field.", array('domain' => 'org.project60.sepa')), ts("Amount", array('domain' => 'org.project60.sepa')));
@@ -403,6 +404,8 @@ class CRM_Sepa_Page_CreateMandate extends CRM_Core_Page {
         $errors['total_amount'] = ts("Cannot parse amount", array('domain' => 'org.project60.sepa'));
       } elseif ($_REQUEST['total_amount'] <= 0) {
         $errors['total_amount'] = ts("Amount has to be positive", array('domain' => 'org.project60.sepa'));
+      } elseif ($limit_amount_single != 0 && $limit_amount_single < $params['total_amount']) {
+        $errors['total_amount'] = sprintf(ts('Amount %1 is larger than %2', array('domain' => 'org.project60.sepa', 1 => $params['total_amount'], 2 => $limit_amount_single)));
       }
     }
 
