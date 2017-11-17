@@ -177,6 +177,24 @@ div.sdd-add-creditor {
                 {$form.custom_FRST_notice.html}
               </td>
             </tr>
+            <tr class="crm-custom-form-block-limit-count-batch">
+              <td class="label">{$form.limit_count_batch.label} <a onclick='CRM.help("{ts domain="org.project60.sepa"}Limit Count Batch{/ts}", {literal}{"id":"id-notice","file":"CRM\/Admin\/Form\/Setting\/SepaSettings"}{/literal}); return false;' href="#" title="{ts domain="org.project60.sepa"}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td>
+                {$form.limit_count_batch.html}
+              </td>
+            </tr>
+            <tr class="crm-custom-form-block-limit-amount-batch">
+              <td class="label">{$form.limit_amount_batch.label} <a onclick='CRM.help("{ts domain="org.project60.sepa"}Limit Amount Batch{/ts}", {literal}{"id":"id-notice","file":"CRM\/Admin\/Form\/Setting\/SepaSettings"}{/literal}); return false;' href="#" title="{ts domain="org.project60.sepa"}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td>
+                {$form.limit_amount_batch.html}
+              </td>
+            </tr>
+            <tr class="crm-custom-form-block-limit-amount-single">
+              <td class="label">{$form.limit_amount_single.label} <a onclick='CRM.help("{ts domain="org.project60.sepa"}Limit Amount Single{/ts}", {literal}{"id":"id-notice","file":"CRM\/Admin\/Form\/Setting\/SepaSettings"}{/literal}); return false;' href="#" title="{ts domain="org.project60.sepa"}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td>
+                {$form.limit_amount_single.html}
+              </td>
+            </tr>
        </table>
        <br/>
        <div>
@@ -405,6 +423,9 @@ div.sdd-add-creditor {
               ["batching_RCUR_grace_override", "custom_RCUR_grace", null],
               ["batching_RCUR_notice_override", "custom_RCUR_notice", null],
               ["batching_FRST_notice_override", "custom_FRST_notice", null],
+              ["batching_limit_count", "limit_count_batch", null],
+              ["batching_limit_amount", "limit_amount_batch", null],
+              ["batching_limit_amount_single", "limit_amount_single", null],
               ["custom_txmsg_override", "custom_txmsg", null]
              ];
 
