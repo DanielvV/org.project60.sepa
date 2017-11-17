@@ -62,7 +62,8 @@ class CRM_Core_Payment_SDD extends CRM_Core_Payment {
 
     // add rules
     $form->registerRule('sepa_iban_valid', 'callback', 'rule_valid_IBAN', 'CRM_Sepa_Logic_Verification');
-    $form->registerRule('sepa_bic_valid',  'callback', 'rule_valid_BIC',  'CRM_Sepa_Logic_Verification');    
+    $form->registerRule('sepa_bic_valid',  'callback', 'rule_valid_BIC',  'CRM_Sepa_Logic_Verification');
+    $form->registerRule('sepa_amount_valid',  'callback', 'rule_valid_amount',  'CRM_Sepa_Logic_Verification');
 
     // apply "hack" for old payment forms
     if (version_compare(CRM_Utils_System::version(), '4.6.10', '<')) {
@@ -70,6 +71,8 @@ class CRM_Core_Payment_SDD extends CRM_Core_Payment {
       $this->fixOldDirectDebitForm($form);
     }
 
+    $form->addRule('total_amount',  ts('This amount is to much for a single SEPA contribution.', array('domain' => 'org.project60.sepa')),  'sepa_amount_valid');
+    
     // BUFFER DAYS / TODO: MOVE TO SERVICE
     $buffer_days      = (int) CRM_Sepa_Logic_Settings::getSetting("pp_buffer_days");
     $frst_notice_days = (int) CRM_Sepa_Logic_Settings::getSetting("batching.FRST.notice", $this->_creditorId);
