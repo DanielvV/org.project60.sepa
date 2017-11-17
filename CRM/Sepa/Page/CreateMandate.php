@@ -404,7 +404,7 @@ class CRM_Sepa_Page_CreateMandate extends CRM_Core_Page {
         $errors['total_amount'] = ts("Cannot parse amount", array('domain' => 'org.project60.sepa'));
       } elseif ($_REQUEST['total_amount'] <= 0) {
         $errors['total_amount'] = ts("Amount has to be positive", array('domain' => 'org.project60.sepa'));
-      } elseif ($limit_amount_single != 0 && $limit_amount_single < $params['total_amount']) {
+      } elseif ($limit_amount_single != 0 && $limit_amount_single < $_REQUEST['total_amount']) {
         $errors['total_amount'] = sprintf(ts('Amount %1 is larger than %2', array('domain' => 'org.project60.sepa', 1 => $params['total_amount'], 2 => $limit_amount_single)));
       }
     }
