@@ -44,6 +44,9 @@ class CRM_Admin_Form_Setting_SepaSettings extends CRM_Admin_Form_Setting
                          array('custom_RCUR_grace',      ts('Recurring grace', array('domain' => 'org.project60.sepa')), array('size' => 2)),
                          array('custom_RCUR_notice',     ts('Recurring&nbsp;notice&nbsp;days (follow-up)', array('domain' => 'org.project60.sepa')), array('size' => 2)),
                          array('custom_FRST_notice',     ts('Recurring&nbsp;notice&nbsp;days (initial)', array('domain' => 'org.project60.sepa')), array('size' => 2)),
+                         array('limit_count_batch',      ts('Limit&nbsp;Count&nbsp;Batch', array('domain' => 'org.project60.sepa')), array('size' => 2)),
+                         array('limit_amount_batch',     ts('Limit&nbsp;Amount&nbsp;Batch', array('domain' => 'org.project60.sepa')), array('size' => 2)),
+                         array('limit_amount_single',     ts('Limit&nbsp;Amount&nbsp;Single', array('domain' => 'org.project60.sepa')), array('size' => 2)),
                          array('custom_update_lock_timeout', ts('Update lock timeout', array('domain' => 'org.project60.sepa')), array('size' => 2)));
     }
 
