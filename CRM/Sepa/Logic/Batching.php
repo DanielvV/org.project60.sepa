@@ -513,6 +513,26 @@ class CRM_Sepa_Logic_Batching {
     }
 
     if (!$partial_groups) {
+      // split into multiple groups if to large
+      $queryParams = array(
+        1 => array($group_id, 'Integer'),
+      ); 
+      
+      $query = "SELECT COUNT(id) AS total FROM civicrm_sdd_contribution_txgroup WHERE txgroup_id=%1";
+      $query_count = CRM_Core_DAO::executeQuery($query, $queryParams);
+      $query_count->fetch();
+
+      $query = "SELECT SUM(total_amount) AS total FROM civicrm_sdd_contribution_txgroup JOIN civicrm_contribution ON civicrm_contribution.id=contribution_id WHERE txgroup_id = %1";
+      $query_amount = CRM_Core_DAO::executeQuery($query, $queryParams);
+      $query_amount->fetch();
+
+      $limit_count = (int) CRM_Sepa_Logic_Settings::getSetting("batching.limit.count", $creditor_id);
+      $limit_amount = (int) CRM_Sepa_Logic_Settings::getSetting("batching.limit.amount", $creditor_id);
+
+      if ($query_count->total > $limit_count OR $query_amount->total > $limit_amount) {
+        self::splitGroup($group_id);
+      }
+
       // do some cleanup
       CRM_Sepa_Logic_Group::cleanup($mode);
     }
@@ -616,5 +636,13 @@ class CRM_Sepa_Logic_Batching {
     $interval  = $rcontribution['frequency_interval'];
     $unit      = $rcontribution['frequency_unit'];
     return CRM_Utils_SepaOptionGroupTools::getFrequencyText($interval, $unit, TRUE);
+  }
+
+  /**
+   * subroutine to split a group if it is to large
+   * @param $group_id           the txgroup_id
+   */
+  protected static function splitGroup($group_id) {
+    //TODO
   }
 }
