@@ -98,32 +98,4 @@ class CRM_Sepa_Logic_Verification {
       return 0;
     }
   }
-
-  
-  /**
-   * Verifies if the given total_amount is not to much
-   *
-   * @param amount  string, total_amount candidate
-   *
-   * @return NULL if given amount is valid, localized error message otherwise
-   */
-  static function verifyAmount($amount) {
-    $limit_amount_single = (int) CRM_Sepa_Logic_Settings::getSetting("batching.limit.amount.single");
-    if ($limit_amount_single = 0 || $limit_amount_single >= $amount) {
-      return NULL;
-    } else {
-      return ts("Amount is not correct", array('domain' => 'org.project60.sepa'));
-    }
-  }
-
-  /**
-   * Form rule wrapper for ::verifyAmount
-   */
-  static function rule_valid_amount($value) {
-    if (self::verifyAmount($value)===NULL) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
 }
