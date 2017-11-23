@@ -1,4 +1,3 @@
-<?php
 /*-------------------------------------------------------+
 | Project 60 - SEPA direct debit                         |
 | Copyright (C) 2013-2018 SYSTOPIA                       |
@@ -259,9 +258,12 @@ class CRM_Sepa_Page_CreateMandate extends CRM_Core_Page {
             if (isset($account_data->BIC)) {
               // we have IBAN and BIC -> add:
               $value = $account_ref['reference'].'/'.$account_data->BIC;
-              array_push($known_accounts,
-                array("name" => $account_ref['reference'], "value"=>$value));
+            } else {
+              $value = $account_ref['reference'];
             }
+            // HACK: also add if there is no BIC
+            array_push($known_accounts,
+              array("name" => $account_ref['reference'], "value"=>$value));
           }
         }
       }
