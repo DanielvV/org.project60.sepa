@@ -86,6 +86,14 @@ class CRM_Sepa_Page_CreateMandate extends CRM_Core_Page {
    * Creates a SEPA mandate for the given type
    */
   function createMandate($type) {
+    // before everything: ensure the bank account is stored with the contact
+    $result = civicrm_api3('BankingAccount', 'getorcreate', array(
+      'reference' => $_REQUEST['iban'],
+      'contact_id' => $_REQUEST['contact_id'],
+      'reference_type' => "IBAN",
+      'bic' => $_REQUEST['bic'],
+    ));
+
     // first create a contribution
     $payment_instrument_id = CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_Contribution', 'payment_instrument_id', $type);
     $contribution_status_id = CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_Contribution', 'contribution_status_id', 'Pending');
