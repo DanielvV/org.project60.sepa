@@ -607,6 +607,45 @@ function sepa_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(
       }
     }
 
+    // copy the mandate values
+    $values[$result->contact_id]["$prefix.reference"]       = $mandate['reference'];
+    if (isset($mandate['source'])) {
+      $values[$result->contact_id]["$prefix.source"]          = $mandate['source'];
+    }
+    $values[$result->contact_id]["$prefix.type"]            = $mandate['type'];
+    $values[$result->contact_id]["$prefix.status"]          = $mandate['status'];
+    $values[$result->contact_id]["$prefix.date"]            = $mandate['date'];
+    if (isset($mandate['iban'])) {
+      $values[$result->contact_id]["$prefix.iban"]            = $mandate['iban'];
+      $values[$result->contact_id]["$prefix.iban_anonymised"] = CRM_Sepa_Logic_Verification::anonymiseIBAN($mandate['iban']);
+    }
+    if (isset($mandate['bic'])) {
+      $values[$result->contact_id]["$prefix.bic"]             = $mandate['bic'];
+    }
+
+    // load and copy the contribution information
+    if ($mandate['entity_table'] == 'civicrm_contribution') {
+      $contribution = civicrm_api3('Contribution', 'getsingle', array('id' => $mandate['entity_id']));
+      $values[$result->contact_id]["$prefix.amount"]           = $contribution['total_amount'];
+      $values[$result->contact_id]["$prefix.currency"]         = $contribution['currency'];
+      $values[$result->contact_id]["$prefix.first_collection"] = $contribution['receive_date'];
+
+    } elseif ($mandate['entity_table'] == 'civicrm_contribution_recur') {
+      $rcontribution = civicrm_api3('ContributionRecur', 'getsingle', array('id' => $mandate['entity_id']));
+      $values[$result->contact_id]["$prefix.amount"]             = $rcontribution['amount'];
+      $values[$result->contact_id]["$prefix.currency"]           = $rcontribution['currency'];
+      $values[$result->contact_id]["$prefix.cycle_day"]          = $rcontribution['cycle_day'];
+      $values[$result->contact_id]["$prefix.frequency_interval"] = $rcontribution['frequency_interval'];
+      $values[$result->contact_id]["$prefix.frequency_unit"]     = $rcontribution['frequency_unit'];
+      $values[$result->contact_id]["$prefix.frequency"]          = CRM_Utils_SepaOptionGroupTools::getFrequencyText($rcontribution['frequency_interval'], $rcontribution['frequency_unit'], true);
+
+      // load first contribution
+      if (!empty($mandate['first_contribution_id'])) {
+        $fcontribution = civicrm_api3('Contribution', 'getsingle', array('id' => $mandate['first_contribution_id']));
+        $values[$result->contact_id]["$prefix.first_collection"] = $fcontribution['receive_date'];
+      }
+    }
+
   } catch (Exception $e) {
     // probably just a minor issue, see SEPA-461
   }
@@ -690,17 +729,23 @@ function sepa_evaluate_tokens(\Civi\Token\Event\TokenValueEvent $e) {
         'return' => array("frequency_unit", "frequency_interval", "financial_type_id"),
         'id' => $row->context['entity_id'],
       ));
+      $frequencyUnit = $result['values'][$result['id']]['frequency_unit'];
+      $frequencyInterval = $result['values'][$result['id']]['frequency_interval'];
+      $financialTypeId = $result['values'][$result['id']]['financial_type_id'];
     } else {
       $result = civicrm_api3('Contribution', 'get', array(
         'return' => array("financial_type_id"),
         'id' => $row->context['entity_id'],
       ));
+      $frequencyUnit = "once";
+      $frequencyInterval = "-1";
+      $financialTypeId = $result['values'][$result['id']]['financial_type_id'];
     }
 
     /** @var TokenRow $row */
     $row->format('text/html');
-    $row->tokens('sepa', 'frequencyUnit', $result['values'][$result['id']]['frequency_unit']);
-    $row->tokens('sepa', 'frequencyInterval', $result['values'][$result['id']]['frequency_interval']);
-    $row->tokens('sepa', 'financialTypeId', $result['values'][$result['id']]['financial_type_id']);
+    $row->tokens('sepa', 'frequencyUnit', $frequencyUnit);
+    $row->tokens('sepa', 'frequencyInterval', $frequencyInterval);
+    $row->tokens('sepa', 'financialTypeId', $financialTypeId);
   }
 }
