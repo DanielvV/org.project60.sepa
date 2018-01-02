@@ -651,13 +651,19 @@ function sepa_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = array(
 
     // copy the mandate values
     $values[$result->contact_id]["$prefix.reference"]       = $mandate['reference'];
-    $values[$result->contact_id]["$prefix.source"]          = $mandate['source'];
+    if (isset($mandate['source'])) {
+      $values[$result->contact_id]["$prefix.source"]          = $mandate['source'];
+    }
     $values[$result->contact_id]["$prefix.type"]            = $mandate['type'];
     $values[$result->contact_id]["$prefix.status"]          = $mandate['status'];
     $values[$result->contact_id]["$prefix.date"]            = $mandate['date'];
-    $values[$result->contact_id]["$prefix.iban"]            = $mandate['iban'];
-    $values[$result->contact_id]["$prefix.iban_anonymised"] = CRM_Sepa_Logic_Verification::anonymiseIBAN($mandate['iban']);
-    $values[$result->contact_id]["$prefix.bic"]             = $mandate['bic'];
+    if (isset($mandate['iban'])) {
+      $values[$result->contact_id]["$prefix.iban"]            = $mandate['iban'];
+      $values[$result->contact_id]["$prefix.iban_anonymised"] = CRM_Sepa_Logic_Verification::anonymiseIBAN($mandate['iban']);
+    }
+    if (isset($mandate['bic'])) {
+      $values[$result->contact_id]["$prefix.bic"]             = $mandate['bic'];
+    }
 
     // load and copy the contribution information
     if ($mandate['entity_table'] == 'civicrm_contribution') {
@@ -708,17 +714,23 @@ function sepa_evaluate_tokens(\Civi\Token\Event\TokenValueEvent $e) {
         'return' => array("frequency_unit", "frequency_interval", "financial_type_id"),
         'id' => $row->context['entity_id'],
       ));
+      $frequencyUnit = $result['values'][$result['id']]['frequency_unit'];
+      $frequencyInterval = $result['values'][$result['id']]['frequency_interval'];
+      $financialTypeId = $result['values'][$result['id']]['financial_type_id'];
     } else {
       $result = civicrm_api3('Contribution', 'get', array(
         'return' => array("financial_type_id"),
         'id' => $row->context['entity_id'],
       ));
+      $frequencyUnit = "once";
+      $frequencyInterval = "-1";
+      $financialTypeId = $result['values'][$result['id']]['financial_type_id'];
     }
 
     /** @var TokenRow $row */
     $row->format('text/html');
-    $row->tokens('sepa', 'frequencyUnit', $result['values'][$result['id']]['frequency_unit']);
-    $row->tokens('sepa', 'frequencyInterval', $result['values'][$result['id']]['frequency_interval']);
-    $row->tokens('sepa', 'financialTypeId', $result['values'][$result['id']]['financial_type_id']);
+    $row->tokens('sepa', 'frequencyUnit', $frequencyUnit);
+    $row->tokens('sepa', 'frequencyInterval', $frequencyInterval);
+    $row->tokens('sepa', 'financialTypeId', $financialTypeId);
   }
 }
